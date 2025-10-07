@@ -17,7 +17,10 @@ void listarProdutos(Tproduto produtos[]);
 
 Tproduto atualizarEstoque(Tproduto produto);
 
-void deletarProduto(int id);
+void deletarProduto(Tproduto[], int id);
+
+//Busca o produto por ID e retorna indice. "-1 = Produto nao encontrado"
+int buscaProduto_ID(Tproduto[], int id);
 
 // Tproduto* buscarProdutoPorID(int id); Tentar implementar nos próximos checkpoints
 
@@ -114,8 +117,33 @@ void listarProdutos(Tproduto produtos[]){
     }
 }
 
-
-
 Tproduto atualizarEstoque(Tproduto produtos){
     return produtos;
+}
+
+int buscaProduto_ID(Tproduto vet[], int id){
+    int i, achou=0;
+
+    for(i=0; i<qtdProdutos; i++){
+        if(id == vet[i].id){
+            achou = 1;
+            break;
+        }
+    }
+    if(achou){
+        return i;
+    }
+    else{
+        printf("ID fornecido Nao Cadastrado\n");
+        return -1;
+    }
+}
+
+void deletarProduto(Tproduto vet[], int id){
+    //Faz a busca do indice do item a ser excluído
+    int i_excl=buscaProduto_ID(vet, id);
+
+    for(int i=i_excl; i<qtdProdutos-1; i++){
+        vet[i] = vet[i+1];
+    }
 }
