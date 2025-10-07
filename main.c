@@ -29,7 +29,7 @@ int qtdProdutos = 0; //Contador de produtos cadastrados (variavel global)
 
 int main (void){
 
-    int resposta;
+    int resposta, id_del;
     Tproduto produtos[100]; // Array para armazenar os produtos
 
     do {
@@ -68,7 +68,9 @@ int main (void){
                 break;
             case 4:
                 printf("Deletar produto selecionado.\n");
-                // Chamar funcao para deletar produto
+                printf("Insira o ID do produto a ser excluido: ");
+                scanf("%d", &id_del);
+                deletarProduto(produtos, id_del);
                 break;
             case 5:
                 printf("Saindo do programa.\n");
@@ -143,7 +145,12 @@ void deletarProduto(Tproduto vet[], int id){
     //Faz a busca do indice do item a ser excluído
     int i_excl=buscaProduto_ID(vet, id);
 
+    //código de erro = Produto nao cadastrado
+    if(i_excl == -1){
+        return;
+    }
     for(int i=i_excl; i<qtdProdutos-1; i++){
         vet[i] = vet[i+1];
     }
+    printf("Produto excluido com sucesso!\n");
 }
