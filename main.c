@@ -11,15 +11,18 @@ typedef struct {
 
 // O prototipo da funcao cadastrarProduto foi alterado para um ponteiro pois é um array
 // e arrays sao passados por referencia
-void cadastrarProduto(Tproduto* produto);
+void cadastrarProduto(Tproduto produto[]);
 
-void listarProdutos();
+void listarProdutos(Tproduto produtos[]);
 
 Tproduto atualizarEstoque(Tproduto produto);
 
 void deletarProduto(int id);
 
 // Tproduto* buscarProdutoPorID(int id); Tentar implementar nos próximos checkpoints
+
+
+int qtdProdutos = 0; //Contador de produtos cadastrados (variavel global)
 
 int main (void){
 
@@ -43,12 +46,19 @@ int main (void){
         switch (resposta) {
             case 1:
                 printf("Cadastrar produtos selecionado.\n");
+                while (getchar() != '\n');
                 cadastrarProduto(produtos);
                 break;
             case 2:
                 printf("Listar produtos cadastrados selecionado.\n");
-                void listarProdutos();
+                if (qtdProdutos == 0){
+                    printf("Nenhum produto cadastrado.\n");
+                    break;
+                }
+                else{
+                listarProdutos(produtos);
                 break;
+                }
             case 3:
                 printf("Atualizar estoque selecionado.\n");
                 // Chamar funcao para atualizar estoque
@@ -70,26 +80,38 @@ int main (void){
 
 // Implementacao da funcao para cadastrar produtos 
 void cadastrarProduto(Tproduto produtos []){
-    int i = 0;
-    do {
-    printf("Insira o nome do produto %d (Digite ""0"" para terminar o cadastro): ", i+1);
-    fgets(produtos[i].nome, 100, stdin);
-    while (getchar() != '\n');
-    if (!(strcmp(produtos[i].nome, "0\n"))) {
-        return;
-    }
-    else {
+    while (qtdProdutos < 100){
+    printf("Insira o nome do produto %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
+    fgets(produtos[qtdProdutos].nome, 50, stdin);
+    produtos[qtdProdutos].nome[strcspn(produtos[qtdProdutos].nome, "\n")] = 0;
+    
+        if (strcmp(produtos[qtdProdutos].nome, "0") == 0){
+            break;
+        }
+
         printf("Insira o preco do produto: ");
-        scanf("%f", &produtos[i].preco);
+        scanf("%f", &produtos[qtdProdutos].preco);
         while (getchar() != '\n');
         printf("Insira a quantidade do produto: ");
-        scanf("%d", &produtos[i].quantidade);
+        scanf("%d", &produtos[qtdProdutos].quantidade);
         while (getchar() != '\n');
-        produtos[i].id = i + 1;
-        i++;
-        getchar();
+        produtos[qtdProdutos].id = qtdProdutos + 1;
+        qtdProdutos++;
+        printf("\n");
     }
-    } while (i < 100);
+}
+
+// Implementacao da funcao para listar produtos
+void listarProdutos(Tproduto produtos[]){
+    printf("Listagem de produtos.\n");
+    printf("_______________________\n");
+    for (int i = 0; i < qtdProdutos; i++){
+        printf("ID: %d\n", produtos[i].id);
+        printf("Nome: %s\n", produtos[i].nome);
+        printf("Preco: %.2f\n", produtos[i].preco);
+        printf("Quantidade: %d\n", produtos[i].quantidade);
+        printf("_______________________\n");
+    }
 }
 
 
