@@ -159,7 +159,7 @@ Tproduto atualizarEstoque(Tproduto produtos[])
                 printf("4. Tudo\n");
                 printf("Escolha: ");
                 scanf("%d", &selecaoFuncaoAtualizar);
-                while (selecaoFuncaoAtualizar < 1 || selecaoFuncaoAtualizar > 3)
+                while (selecaoFuncaoAtualizar < 1 || selecaoFuncaoAtualizar > 4)
                 {
                     printf("Resposta invalida. Tente novamente: ");
                     scanf("%d", &selecaoFuncaoAtualizar);
