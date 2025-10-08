@@ -204,6 +204,7 @@ int buscaProduto_ID(Tproduto vet[], int id)
 {
     int i, achou=0;
 
+    //Faz a busca pelo ID fornecido em todo o vetor
     for(i=0; i<qtdProdutos; i++)
     {
         if(id == vet[i].id)
@@ -212,7 +213,7 @@ int buscaProduto_ID(Tproduto vet[], int id)
             break;
         }
     }
-    
+    //Retorna o indice do ID fornecido ou codigo de erro(-1)
     if(achou)
     {
         return i;
@@ -235,9 +236,13 @@ void deletarProduto(Tproduto vet[], int id)
         return;
     }
 
+    //Sobrescreve o produto a ser excluido pelos seguintes
     for(int i=i_excl; i<qtdProdutos-1; i++)
     {
         vet[i] = vet[i+1];
+        vet[i].id--;
     }
+    //Diminui 1 da quantidade total
+    qtdProdutos--;
     printf("Produto excluido com sucesso!\n");
 }
