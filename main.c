@@ -17,7 +17,10 @@ void listarProdutos(Tproduto produtos[]);
 
 Tproduto atualizarEstoque(Tproduto produto);
 
-void deletarProduto(int id);
+void deletarProduto(Tproduto[], int id);
+
+//Busca o produto por ID e retorna indice. "-1 = Produto nao encontrado"
+int buscaProduto_ID(Tproduto[], int id);
 
 // Tproduto* buscarProdutoPorID(int id); Tentar implementar nos próximos checkpoints
 
@@ -26,7 +29,7 @@ int qtdProdutos = 0; //Contador de produtos cadastrados (variavel global)
 
 int main (void){
 
-    int resposta;
+    int resposta, id_del;
     Tproduto produtos[100]; // Array para armazenar os produtos
 
     do {
@@ -65,7 +68,9 @@ int main (void){
                 break;
             case 4:
                 printf("Deletar produto selecionado.\n");
-                // Chamar funcao para deletar produto
+                printf("Insira o ID do produto a ser excluido: ");
+                scanf("%d", &id_del);
+                deletarProduto(produtos, id_del);
                 break;
             case 5:
                 printf("Saindo do programa.\n");
@@ -114,8 +119,38 @@ void listarProdutos(Tproduto produtos[]){
     }
 }
 
-
-
 Tproduto atualizarEstoque(Tproduto produtos){
     return produtos;
+}
+
+int buscaProduto_ID(Tproduto vet[], int id){
+    int i, achou=0;
+
+    for(i=0; i<qtdProdutos; i++){
+        if(id == vet[i].id){
+            achou = 1;
+            break;
+        }
+    }
+    if(achou){
+        return i;
+    }
+    else{
+        printf("ID fornecido Nao Cadastrado\n");
+        return -1;
+    }
+}
+
+void deletarProduto(Tproduto vet[], int id){
+    //Faz a busca do indice do item a ser excluído
+    int i_excl=buscaProduto_ID(vet, id);
+
+    //código de erro = Produto nao cadastrado
+    if(i_excl == -1){
+        return;
+    }
+    for(int i=i_excl; i<qtdProdutos-1; i++){
+        vet[i] = vet[i+1];
+    }
+    printf("Produto excluido com sucesso!\n");
 }
