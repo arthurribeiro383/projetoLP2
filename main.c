@@ -13,7 +13,7 @@ typedef struct
 // Protótipos das funções: 
 void cadastrarProduto(Tproduto produto[]);
 void listarProdutos(Tproduto produtos[]);
-Tproduto atualizarEstoque(Tproduto produtos[]);
+void atualizarEstoque(Tproduto produtos[]);
 void deletarProduto(Tproduto[], int id);
 int buscaProduto_ID(Tproduto[], int id); //Busca o produto por ID e retorna indice. "-1 = Produto nao encontrado"
 //_______________________________________________________________________________________________________________________
@@ -128,7 +128,7 @@ void listarProdutos(Tproduto produtos[])
 }
 
 // Implementacao da funcao para atualizar estoque
-Tproduto atualizarEstoque(Tproduto produtos[])
+void atualizarEstoque(Tproduto produtos[])
 {
     int respostaParaListagemAtt, idParaAtualizar, idEncontradoAtt, selecaoFuncaoAtualizar;
     printf("Deseja listar os produtos cadastrados para adiquirir o id do produto a ser atualizado? (1-Sim / 0-Nao): ");
@@ -197,7 +197,7 @@ Tproduto atualizarEstoque(Tproduto produtos[])
                         break;
                 }
 
-    return produtos[idEncontradoAtt];
+    //return produtos[idEncontradoAtt];
 }
 
 int buscaProduto_ID(Tproduto vet[], int id)
