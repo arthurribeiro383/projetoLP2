@@ -64,7 +64,12 @@ void listarProdutos(Tproduto produtos[])
         printf("ID: %d\n", produtos[i].id);
         printf("Nome: %s\n", produtos[i].nome);
         printf("Preco: %.2f\n", produtos[i].preco);
+        
+        if (produtos[i].quantidade == 0)
+            printf("ESGOTADO.\n");
+        else
         printf("Quantidade: %d\n", produtos[i].quantidade);
+        
         printf("_______________________\n");
     }
 }
