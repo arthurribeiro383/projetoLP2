@@ -3,6 +3,7 @@
 #include <string.h>
 #include"funcoes.h"
 
+int qtdProdutos = 0;
 int qtd_alertas=0;
 custom_noti noti_mod[MAX_NOTI];
 
@@ -16,7 +17,6 @@ int main (void)
     Tproduto* produtos = NULL; // Array para armazenar os produtos
     Toferta* cabeca= malloc(sizeof(Toferta));  //cabeça para lista de ofertas
     cabeca->prox=NULL;
-
 
     do 
     {

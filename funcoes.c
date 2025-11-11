@@ -4,7 +4,7 @@
 #include"funcoes.h"
 
 
-int qtdProdutos = 0; //Contador de produtos cadastrados (variavel global)
+extern int qtdProdutos; //Contador de produtos cadastrados (variavel global)
 extern int qtd_alertas; //serve para ambos os sistemas de notificação
 extern custom_noti noti_mod[MAX_NOTI];  //sistema custom de notificações
 
