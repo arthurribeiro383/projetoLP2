@@ -71,5 +71,6 @@ int main (void)
     } while (resposta != 5);
 
     free(produtos);
+    produtos = NULL;
     return  0;
 }
