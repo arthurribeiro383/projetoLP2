@@ -38,6 +38,11 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
         while (getchar() != '\n');
         printf("Insira a quantidade do produto: ");
         scanf("%d", &produtos[qtdProdutos].quantidade);
+        if (produtos[qtdProdutos].quantidade == 0)
+            produtos[qtdProdutos].status |= ESGOTADO; //marca como esgotado
+        else
+            produtos[qtdProdutos].status &= ~ESGOTADO; //desmarca como esgotado
+
         while (getchar() != '\n');
         produtos[qtdProdutos].id = qtdProdutos + 1;
         qtdProdutos++; //incrementa qtd de produtos
@@ -109,26 +114,41 @@ Tproduto atualizarEstoque(Tproduto produtos[])
                         produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
                         printf("Nome atualizado com sucesso!\n");
                         break;
+                    
                     case 2:
                         printf("Insira o novo preco do produto(por @): ");
                         scanf("%f", &produtos[idEncontradoAtt].preco);
                         printf("Preco atualizado com sucesso!\n");
                         break;
+                    
                     case 3:
                         printf("Insira a nova quantidade do produto: ");
                         scanf("%d", &produtos[idEncontradoAtt].quantidade);
-                        printf("Quantidade atualizada com sucesso!\n");
+                         if (produtos[idEncontradoAtt].quantidade == 0)
+                            produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
+                        else
+                            produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
+                        
+                            printf("Quantidade atualizada com sucesso!\n");
                         break;
+                    
                     case 4:
                         while (getchar() != '\n');
                         printf("Insira o novo nome do produto: ");
                         fgets(produtos[idEncontradoAtt].nome, 50, stdin);
                         produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
+                        
                         printf("Insira o novo preco do produto(por @): ");
                         scanf("%f", &produtos[idEncontradoAtt].preco);
+                        
                         printf("Insira a nova quantidade do produto: ");
                         scanf("%d", &produtos[idEncontradoAtt].quantidade);
-                        printf("Produto atualizado com sucesso!\n");
+                        if (produtos[idEncontradoAtt].quantidade == 0)
+                            produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
+                        else
+                            produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
+                        
+                            printf("Produto atualizado com sucesso!\n");
                         break;
                 }
 

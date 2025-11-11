@@ -1,10 +1,13 @@
 #ifndef FUNCOES_H
 #define FUNCOES_H
 
+#define ESGOTADO 1
+
 typedef struct
 {
     int id;
     char nome[50];
+    unsigned char status;
     float preco;
     int quantidade;
 } Tproduto;
