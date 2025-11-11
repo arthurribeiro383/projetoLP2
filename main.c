@@ -3,11 +3,22 @@
 #include <string.h>
 #include"funcoes.h"
 
+int qtdProdutos=0;
+int qtd_alertas=0;
+custom_noti noti_mod[MAX_NOTI];
+
 int main (void)
 {
+    registrar_alerta_custom(alerta_cel, "Celular");
+    registrar_alerta_custom(alerta_email, "E-mail");
+    registrar_alerta_custom(alerta_sistema, "Sistema");
 
     int resposta, id_del;
     Tproduto* produtos = NULL; // Array para armazenar os produtos
+
+    Toferta* cabeca= malloc(sizeof(Toferta));  //cabeça para lista de ofertas
+    cabeca->prox=NULL;
+
 
     do 
     {
@@ -16,11 +27,12 @@ int main (void)
         printf("2. Listar produtos cadastrados.\n");
         printf("3. Atualizar estoque.\n");
         printf("4. Deletar produto.\n");
-        printf("5. Sair\n");
+        printf("5. Menu de Vendas\n");
+        printf("6. Sair\n");
         printf("Escolha: ");
         scanf("%d", &resposta);
         
-        while (resposta < 1 || resposta > 5)
+        while (resposta < 1 || resposta > 6)
         {
             printf("Resposta invalida. Tente novamente: ");
             scanf("%d", &resposta);
@@ -59,17 +71,21 @@ int main (void)
                 break;
 
             case 5:
+                vendasMenu(cabeca);
+                break;
+
+            case 6:
                 printf("Saindo do programa.\n");
                 break;
         }
 
-        if(produtos == NULL){
-            printf("Alocação do vetor invalido: Encerrando produto!\n");
-            break;
-        }
 
-    } while (resposta != 5);
+    } while (resposta != 6);
 
+    
+    liberaLista(cabeca);
+    free(cabeca);
+    cabeca=NULL;
     free(produtos);
     produtos = NULL;
     return  0;

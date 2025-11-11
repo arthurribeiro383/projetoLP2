@@ -247,6 +247,7 @@ void registrar_oferta(Toferta* head){
     Toferta* nova=malloc(sizeof(Toferta));
     char notificacao[120];
 
+    printf("=========================\n");
     getchar(); //consome buffer de entrada
     printf("Insira o nome do produto: ");
     fgets(nova->nome, 50, stdin);
@@ -330,15 +331,15 @@ void liberaLista(Toferta* p){
 }
 
 void alerta_email(const char* msg){
-    printf("Email enviado automaticamente para todos\n%s\n", msg);
+    printf("\nEmail enviado automaticamente para todos\n%s\n", msg);
 }
 
 void alerta_sistema(const char* msg){
-    printf("ATENCAO: Notificacao de sistema\n%s\n", msg);
+    printf("\nATENCAO: Notificacao de sistema\n%s\n", msg);
 }
 
 void alerta_cel(const char* msg){
-    printf("Mensagem automatica enviada para todos os celulares cadastrados\n%s\n", msg);
+    printf("\nMensagem automatica enviada para todos os celulares cadastrados\n%s\n", msg);
 }
 
 void registrar_alerta_custom(notificar reg, char* descri){
@@ -353,7 +354,7 @@ void registrar_alerta_custom(notificar reg, char* descri){
 
 void option_alerta_custom(void){
     for(int i=0; i<qtd_alertas; i++){
-        printf("Deseja enviar notificacao para %s (1 para sim, 0 para nao)? ", noti_mod[i].descricao);
+        printf("-->Deseja enviar notificacao para %s (1 para sim, 0 para nao)? ", noti_mod[i].descricao);
         scanf("%d", &noti_mod[i].option);
     }
 }
