@@ -5,15 +5,16 @@
 
 //FUNCOES DE INTERFACE
 void limpaTela(void){
-    system("clear");
+    if (_WIN32)
+        system("cls");
+    else
+        system("clear");
 }
 
 void cabecalho(void){
-    limpaTela();
     printf(COR_TITULO "========================================\n" COR_RESET);
     printf(COR_TITULO "         SISTEMA DE ESTOQUE\n" COR_RESET);
     printf(COR_TITULO "========================================\n\n" COR_RESET);
-
 }
 
 //Inicializacao de Var Globais
@@ -72,10 +73,13 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
 }
 
 // Implementacao da funcao para listar produtos
-void listarProdutos(Tproduto produtos[])
+void listarProdutosRecursivo(Tproduto produtos[], int indice)
 {
     printf(COR_TITULO "Lista de produtos:\n\n" COR_RESET);
     printf("_______________________\n");
+    if (indice == qtdProdutos)
+        return;
+    
     if (qtdProdutos == 0) {
         printf(COR_ERRO "Nenhum produto cadastrado.\n" COR_RESET);
         return;
@@ -83,15 +87,15 @@ void listarProdutos(Tproduto produtos[])
     
     printf("%-4s | %-30s | %-6s | %-8s | %-10s\n", "ID", "Nome", "Qtd", "Preco", "Status");
     printf("-----+--------------------------------+-------+----------+------------\n");
-    for (int i = 0; i < qtdProdutos; i++) {
-        printf("%-4d | %-30s | %-6d | R$%6.2f | ", produtos[i].id, produtos[i].nome, produtos[i].quantidade, produtos[i].preco);
+    printf("%-4d | %-30s | %-6d | R$%6.2f | ", produtos[indice].id, produtos[indice].nome, produtos[indice].quantidade, produtos[indice].preco);
         
-        if (produtos[i].status & ESGOTADO) 
-            printf(COR_ERRO "ESGOTADO" COR_RESET);
-        else
-            printf(COR_OK "DISPONIVEL" COR_RESET);
-        printf("\n");
-    }
+    if (produtos[indice].status & ESGOTADO)
+        printf(COR_ERRO "ESGOTADO" COR_RESET);
+    else
+        printf(COR_OK "DISPONIVEL" COR_RESET);
+
+    printf("\n");
+    listarProdutosRecursivo(produtos, indice + 1);
 }
 
 
