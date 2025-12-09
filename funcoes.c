@@ -71,7 +71,6 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
     return produtos;
 }
 
-
 void listarProdutosRecursivo(Tproduto *produtos, int i) {
 
     if (qtdProdutos == 0) {
@@ -106,7 +105,6 @@ void listarProdutosRecursivo(Tproduto *produtos, int i) {
     // Chamada recursiva
     listarProdutosRecursivo(produtos, i + 1);
 }
-
 
 
 // Implementacao da funcao para atualizar estoque
