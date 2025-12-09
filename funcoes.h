@@ -2,6 +2,7 @@
 #define FUNCOES_H
 
 //=================INICIO DO ARQUIVO==============================================
+#define ESGOTADO 1
 #define MAX_NOTI 3 //maximo de notificações diferentes
 typedef void(*notificar)(const char*); //tipo 'notificar' é uma função void que recebe char*.
 

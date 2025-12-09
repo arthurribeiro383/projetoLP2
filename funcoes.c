@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include"funcoes.h"
+#include "funcoes.h"
 
 
 extern int qtdProdutos; //Contador de produtos cadastrados (variavel global)
