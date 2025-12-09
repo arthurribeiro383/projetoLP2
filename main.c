@@ -3,12 +3,10 @@
 #include <string.h>
 #include"funcoes.h"
 
-int qtdProdutos=0;
-int qtd_alertas=0;
-custom_noti noti_mod[MAX_NOTI];
 
 int main (void)
 {
+
     registrar_alerta_custom(alerta_cel, "Celular");
     registrar_alerta_custom(alerta_email, "E-mail");
     registrar_alerta_custom(alerta_sistema, "Sistema");
@@ -17,70 +15,54 @@ int main (void)
     Tproduto* produtos = NULL; // Array para armazenar os produtos
 
     Toferta* cabeca= malloc(sizeof(Toferta));  //cabeça para lista de ofertas
+    if(!cabeca){
+        perror("malloc");
+        return 1;
+    }
     cabeca->prox=NULL;
+
+    Callback acoes[] = {
+    NULL,             // índice 0 não usado
+    NULL,             // 1 = cadastrar (não vai para o vetor por causa do parametro diferente)
+    acaoListar,       // 2
+    acaoAtualizar,    // 3
+    acaoDeletar,      // 4
+    acaoMenuVendas    // 5
+};
 
 
     do 
     {
-        printf("\nMENU: \n");
-        printf("1. Cadastrar produtos.\n");
-        printf("2. Listar produtos cadastrados.\n");
-        printf("3. Atualizar estoque.\n");
-        printf("4. Deletar produto.\n");
-        printf("5. Menu de Vendas\n");
-        printf("6. Sair\n");
+        cabecalho();
+        printf(COR_MENU "1. Cadastrar produtos.\n" COR_RESET);
+        printf(COR_MENU "2. Listar produtos cadastrados.\n" COR_RESET);
+        printf(COR_MENU "3. Atualizar estoque.\n" COR_RESET);
+        printf(COR_MENU "4. Deletar produto.\n" COR_RESET);
+        printf(COR_MENU "5. Menu de Vendas\n" COR_RESET);
+        printf(COR_MENU "6. Sair\n" COR_RESET);
         printf("Escolha: ");
         scanf("%d", &resposta);
+        while (getchar() != '\n');
         
         while (resposta < 1 || resposta > 6)
         {
             printf("Resposta invalida. Tente novamente: ");
             scanf("%d", &resposta);
+            while (getchar() != '\n');
         }
 
-        switch (resposta)
-        {
-            case 1:
-                printf("\nCadastrar produtos selecionado.\n");
-                while (getchar() != '\n');
-                produtos = cadastrarProduto(produtos);
-                break;
-            case 2:
-                printf("\nListar produtos cadastrados selecionado.\n");
-                if (qtdProdutos == 0)
-                {
-                    printf("Nenhum produto cadastrado.\n");
-                    break;
-                }
-                else
-                {
-                listarProdutos(produtos);
-                break;
-                }
+         if (resposta == 6)
+        break;
 
-            case 3:
-                printf("\nAtualizar estoque selecionado.\n");
-                atualizarEstoque(produtos);
-                break;
-
-            case 4:
-                printf("\nDeletar produto selecionado.\n");
-                printf("Insira o ID do produto a ser excluido: ");
-                scanf("%d", &id_del);
-                deletarProduto(produtos, id_del);
-                break;
-
-            case 5:
-                vendasMenu(cabeca);
-                break;
-
-            case 6:
-                printf("Saindo do programa.\n");
-                break;
+        if (resposta == 1) {
+            produtos = cadastrarProduto(produtos);
+            continue;
         }
 
+        // Chama via callback
+        acoes[resposta]( resposta == 5 ? (void*) cabeca : (void*) produtos );
 
-    } while (resposta != 6);
+    } while (1);
 
     
     liberaLista(cabeca);

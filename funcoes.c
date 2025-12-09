@@ -3,20 +3,33 @@
 #include <string.h>
 #include "funcoes.h"
 
+//FUNCOES DE INTERFACE
+void limpaTela(void){
+    system("clear");
+}
 
-extern int qtdProdutos; //Contador de produtos cadastrados (variavel global)
-extern int qtd_alertas; //serve para ambos os sistemas de notificação
-extern custom_noti noti_mod[MAX_NOTI];  //sistema custom de notificações
+void cabecalho(void){
+    limpaTela();
+    printf(COR_TITULO "========================================\n" COR_RESET);
+    printf(COR_TITULO "         SISTEMA DE ESTOQUE\n" COR_RESET);
+    printf(COR_TITULO "========================================\n\n" COR_RESET);
 
+}
 
-// Implementacao da funcao para cadastrar produtos 
+//Inicializacao de Var Globais
+int qtdProdutos = 0;
+int qtd_alertas = 0;
+custom_noti noti_mod[MAX_NOTI];
+
+//LOGICA PRINCIPAL DO PROGRAMA
+    //PARTE DE PRODUTOS
+
 Tproduto* cadastrarProduto(Tproduto* produtos)
 {   char nome_temp[50];
     while (1)
     {
 
         printf("Insira o nome do produto %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
-
         fgets(nome_temp, 50, stdin);
         nome_temp[strcspn(nome_temp, "\n")] = 0;
 
@@ -27,7 +40,8 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
         
         Tproduto* temp = realloc(produtos, (qtdProdutos+1)*sizeof(Tproduto));
         if(temp == NULL){
-            printf("Alocação de vetor inválida: Encerrando Programa\n");
+            fprintf(stderr, COR_ERRO"Alocação de vetor inválida: Encerrando Programa\n" COR_RESET);
+            free(produtos);
             return NULL;
         }
         produtos = temp;
@@ -38,6 +52,7 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
         printf("Insira o preco do produto(por @): ");
         scanf("%f", &produtos[qtdProdutos].preco);
         while (getchar() != '\n');
+
         printf("Insira a quantidade do produto: ");
         scanf("%d", &produtos[qtdProdutos].quantidade);
         if (produtos[qtdProdutos].quantidade == 0)
@@ -46,9 +61,11 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
             produtos[qtdProdutos].status &= ~ESGOTADO; //desmarca como esgotado
 
         while (getchar() != '\n');
+
         produtos[qtdProdutos].id = qtdProdutos + 1;
         qtdProdutos++; //incrementa qtd de produtos
 
+        printf(COR_OK "Produto cadastrado!\n" COR_RESET);
         printf("\n");
     }
     return produtos;
@@ -57,25 +74,29 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
 // Implementacao da funcao para listar produtos
 void listarProdutos(Tproduto produtos[])
 {
-    printf("Listagem de produtos.\n");
+    printf(COR_TITULO "Lista de produtos:\n\n" COR_RESET);
     printf("_______________________\n");
-    for (int i = 0; i < qtdProdutos; i++)
-    {
-        printf("ID: %d\n", produtos[i].id);
-        printf("Nome: %s\n", produtos[i].nome);
-        printf("Preco: %.2f\n", produtos[i].preco);
+    if (qtdProdutos == 0) {
+        printf(COR_ERRO "Nenhum produto cadastrado.\n" COR_RESET);
+        return;
+    }
+    
+    printf("%-4s | %-30s | %-6s | %-8s | %-10s\n", "ID", "Nome", "Qtd", "Preco", "Status");
+    printf("-----+--------------------------------+-------+----------+------------\n");
+    for (int i = 0; i < qtdProdutos; i++) {
+        printf("%-4d | %-30s | %-6d | R$%6.2f | ", produtos[i].id, produtos[i].nome, produtos[i].quantidade, produtos[i].preco);
         
-        if (produtos[i].quantidade == 0)
-            printf("ESGOTADO.\n");
+        if (produtos[i].status & ESGOTADO) 
+            printf(COR_ERRO "ESGOTADO" COR_RESET);
         else
-        printf("Quantidade: %d\n", produtos[i].quantidade);
-        
-        printf("_______________________\n");
+            printf(COR_OK "DISPONIVEL" COR_RESET);
+        printf("\n");
     }
 }
 
+
 // Implementacao da funcao para atualizar estoque
-Tproduto atualizarEstoque(Tproduto produtos[])
+void atualizarEstoque(Tproduto produtos[])
 {
     int respostaParaListagemAtt, idParaAtualizar, idEncontradoAtt, selecaoFuncaoAtualizar;
     printf("Deseja listar os produtos cadastrados para adiquirir o id do produto a ser atualizado? (1-Sim / 0-Nao): ");
@@ -98,6 +119,8 @@ Tproduto atualizarEstoque(Tproduto produtos[])
                 printf("Insira o ID do produto a ser atualizado: ");
                 scanf("%d", &idParaAtualizar);
                 idEncontradoAtt = buscaProduto_ID(produtos, idParaAtualizar);
+                if (idEncontradoAtt == -1) 
+                    return;
 
                 printf("O que deseja atualizar no produto selecionado?\n");
                 printf("1. Nome\n");
@@ -158,8 +181,6 @@ Tproduto atualizarEstoque(Tproduto produtos[])
                         printf("Produto atualizado com sucesso!\n");
                         break;
                 }
-
-    return produtos[idEncontradoAtt];
 }
 
 int buscaProduto_ID(Tproduto vet[], int id)
@@ -182,7 +203,7 @@ int buscaProduto_ID(Tproduto vet[], int id)
     }
     else
     {
-        printf("ID fornecido Nao Cadastrado\n");
+        printf(COR_ERRO "ID fornecido Nao Cadastrado\n" COR_RESET);
         return -1;
     }
 }
@@ -206,21 +227,22 @@ void deletarProduto(Tproduto vet[], int id)
     }
     //Diminui 1 da quantidade total
     qtdProdutos--;
-    printf("Produto excluido com sucesso!\n");
+    printf(COR_OK "Produto excluido com sucesso!\n" COR_RESET);
 }
 
 void vendasMenu(Toferta* cabeca){
     int option=0;
 
     do{
-    printf("======MENU DE VENDAS======\n"
-        "\t-> Sempre que uma oferta e excluido ou adicionada uma notificacao e enviada para todos\n"
-        "1. Registrar Oferta\n"
-        "2. Excluir Oferta\n"
-        "3. Mostrar Ofertas\n"
-        "4. Sair do Menu de Vendas\n");
-    printf("Selecione opcao desejada: ");
+    cabecalho();
+    printf(COR_TITULO "======MENU DE VENDAS======\n" COR_RESET);
+        printf("1. Registrar Oferta\n");
+        printf("2. Excluir Oferta\n");
+        printf("3. Mostrar Ofertas\n");
+        printf("4. Sair\n");
+        printf("Selecione opcao desejada: ");
     scanf("%d", &option);
+    while (getchar() != '\n');
 
     switch(option){
         case 1:
@@ -240,15 +262,18 @@ void vendasMenu(Toferta* cabeca){
             break;
     }
 
-    }while(option > 0 || option < 5);
+    }while(option >= 1 && option <= 3);
 }
 
 void registrar_oferta(Toferta* head){
     Toferta* nova=malloc(sizeof(Toferta));
+    if(!nova){
+        perror("malloc");
+        return;
+    }
+
     char notificacao[120];
 
-    printf("=========================\n");
-    getchar(); //consome buffer de entrada
     printf("Insira o nome do produto: ");
     fgets(nova->nome, 50, stdin);
     nova->nome[strcspn(nova->nome, "\n")] = '\0'; //tira o '\n'
@@ -263,6 +288,7 @@ void registrar_oferta(Toferta* head){
 
     printf("Insira o valor da oferta: ");
     scanf("%f", &nova->valor);
+    while (getchar() != '\n');
 
     nova->prox = head->prox; //adiciona 'nova' depois da cabeça
     head->prox = nova;  //liga 'cabeça' à 'nova'
@@ -271,6 +297,7 @@ void registrar_oferta(Toferta* head){
     option_alerta_custom();
     notificar_all_custom(notificacao);
 
+    printf(COR_OK "Oferta registrada!\n" COR_RESET);
 }
 
 void excluir_oferta(Toferta* p){
@@ -279,7 +306,6 @@ void excluir_oferta(Toferta* p){
     char notificacao[170];
     char nome[50];
 
-    getchar(); //consome buffer de entrada
     printf("Insira o nome do produto a ser excluido(exatamente igual a lista): ");
     fgets(nome, 50, stdin);
     nome[strcspn(nome, "\n")] = '\0';
@@ -301,11 +327,13 @@ void excluir_oferta(Toferta* p){
     ant->prox = p->prox; //só é executado se alista não chegou ao fim(evitar segmentation fault)
     free(p);
 
+    printf(COR_OK "Oferta excluída!\n" COR_RESET);
+
 }
 
 void lista_ofertas(Toferta* p){
     int i;
-    printf("\n======INICIO DA LISTA=====\n");
+    printf(COR_TITULO "\n======INICIO DA LISTA=====\n" COR_RESET);
 
     for(i=0, p=p->prox ; p != NULL; i++, p = p->prox){
 
@@ -317,7 +345,7 @@ void lista_ofertas(Toferta* p){
             printf("\n");
     }
 
-    printf("=====FIM DA LISTA=====\n\n");
+    printf(COR_TITULO "=====FIM DA LISTA=====\n\n" COR_RESET);
 }
 
 void liberaLista(Toferta* p){
@@ -363,4 +391,30 @@ void notificar_all_custom(const char* msg){
     for(int i=0; i<qtd_alertas; i++){
         if(noti_mod[i].option) noti_mod[i].alerta(msg);
     }
+}
+
+void acaoListar(void *data) {
+    Tproduto *produtos = (Tproduto*) data;
+    if (qtdProdutos == 0)
+        printf("Nenhum produto cadastrado.\n");
+    else
+        listarProdutos(produtos);
+}
+
+void acaoAtualizar(void *data) {
+    Tproduto *produtos = (Tproduto*) data;
+    atualizarEstoque(produtos);
+}
+
+void acaoDeletar(void *data) {
+    Tproduto *produtos = (Tproduto*) data;
+    int id_del;
+    printf("Insira o ID do produto a ser excluido: ");
+    scanf("%d", &id_del);
+    deletarProduto(produtos, id_del);
+}
+
+void acaoMenuVendas(void *data) {
+    Toferta *cabeca = (Toferta*) data;
+    vendasMenu(cabeca);
 }
