@@ -13,13 +13,12 @@ int main (void)
 
     int resposta, id_del;
     Tproduto* produtos = NULL; // Array para armazenar os produtos
+    produtos = (Tproduto*)resgata_vet("produtos.dat", sizeof(Tproduto), &qtdProdutos);
 
-    Toferta* cabeca= malloc(sizeof(Toferta));  //cabeça para lista de ofertas
-    if(!cabeca){
-        perror("malloc");
-        return 1;
-    }
-    cabeca->prox=NULL;
+    Toferta* cabeca= NULL;
+    Toferta* temp_lista_vet = (Toferta*)resgata_vet("vendas.dat", sizeof(Toferta), &qtd_ofertas);
+    vetEmLista(temp_lista_vet, &cabeca);
+
 
     Callback acoes[] = {
     NULL,             // índice 0 não usado
@@ -60,13 +59,17 @@ int main (void)
         }
 
         // Chama via callback
-        acoes[resposta]( resposta == 5 ? (void*) cabeca : (void*) produtos );
+        acoes[resposta]( resposta == 5 ? (void*) &cabeca : (void*) produtos );
 
     } while (1);
 
-    
+    temp_lista_vet=listaEmVet(cabeca);
+
+    grava_vet((void*)temp_lista_vet, "vendas.dat", sizeof(Toferta), &qtd_ofertas);
+    grava_vet((void*)produtos, "produtos.dat", sizeof(Tproduto), &qtdProdutos);
+    free(temp_lista_vet);
+    temp_lista_vet=NULL;
     liberaLista(cabeca);
-    free(cabeca);
     cabeca=NULL;
     free(produtos);
     produtos = NULL;

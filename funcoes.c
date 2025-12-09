@@ -5,10 +5,7 @@
 
 //FUNCOES DE INTERFACE
 void limpaTela(void){
-    if (_WIN32)
-        system("cls");
-    else
-        system("clear");
+    system("clear");
 }
 
 void cabecalho(void){
@@ -20,6 +17,7 @@ void cabecalho(void){
 //Inicializacao de Var Globais
 int qtdProdutos = 0;
 int qtd_alertas = 0;
+int qtd_ofertas = 0;
 custom_noti noti_mod[MAX_NOTI];
 
 //LOGICA PRINCIPAL DO PROGRAMA
@@ -247,7 +245,7 @@ void deletarProduto(Tproduto vet[], int id)
     printf(COR_OK "Produto excluido com sucesso!\n" COR_RESET);
 }
 
-void vendasMenu(Toferta* cabeca){
+void vendasMenu(Toferta** cabeca){
     int option=0;
 
     do{
@@ -269,7 +267,7 @@ void vendasMenu(Toferta* cabeca){
             excluir_oferta(cabeca);            
             break;
         case 3:
-            lista_ofertas(cabeca);
+            lista_ofertas(*cabeca);
             break;
         case 4: 
             printf("Obrigado! Volte sempre!!!\n");
@@ -282,7 +280,7 @@ void vendasMenu(Toferta* cabeca){
     }while(option >= 1 && option <= 3);
 }
 
-void registrar_oferta(Toferta* head){
+void registrar_oferta(Toferta** head){
     Toferta* nova=malloc(sizeof(Toferta));
     if(!nova){
         perror("malloc");
@@ -302,21 +300,29 @@ void registrar_oferta(Toferta* head){
     scanf("%f", &nova->valor);
     while (getchar() != '\n');
 
-    nova->prox = head->prox; //adiciona 'nova' depois da cabeça
-    head->prox = nova;  //liga 'cabeça' à 'nova'
+    
+
+    nova->prox = *head; //adiciona 'nova' depois da cabeça
+    *head = nova;  //liga 'cabeça' à 'nova'
 
     snprintf(notificacao, 120, "Nova oferta adicionada\n    Nome->%s\n    Quantidade->%d\n    Valor->%.2f\n", nova->nome, nova->qtd, nova->valor);
     option_alerta_custom();
     notificar_all_custom(notificacao);
 
     printf(COR_OK "Oferta registrada!\n" COR_RESET);
+    qtd_ofertas++;
 }
 
-void excluir_oferta(Toferta* p){
-    Toferta* ant=p;
-    p=p->prox;
+void excluir_oferta(Toferta** head){
+    Toferta* ant=NULL;
+    Toferta* p=*head;
     char notificacao[170];
     char nome[50];
+
+    if(p == NULL){
+        printf("Lista vazia!\n");
+        return;
+    }
 
     printf("Insira o nome do produto a ser excluido(exatamente igual a lista): ");
     fgets(nome, 50, stdin);
@@ -332,12 +338,19 @@ void excluir_oferta(Toferta* p){
         return;
     }
 
+
     snprintf(notificacao, 100, "Oferta esgotada\n    Nome->%s\n    Quantidade->%d\n    Valor->%.2f\n", p->nome, p->qtd, p->valor); //nesse momento p é p nó a ser excluído
     option_alerta_custom();
     notificar_all_custom(notificacao);
 
-    ant->prox = p->prox; //só é executado se alista não chegou ao fim(evitar segmentation fault)
+    if(ant == NULL){//primeiro no
+        *head = p->prox; //proximo depois da cabeça
+    }
+    else{
+        ant->prox = p->prox; //só é executado se alista não chegou ao fim(evitar segmentation fault)
+    }
     free(p);
+    qtd_ofertas--;
 
     printf(COR_OK "Oferta excluída!\n" COR_RESET);
 
@@ -347,7 +360,7 @@ void lista_ofertas(Toferta* p){
     int i;
     printf(COR_TITULO "\n======INICIO DA LISTA=====\n" COR_RESET);
 
-    for(i=0, p=p->prox ; p != NULL; i++, p = p->prox){
+    for(i=0; p != NULL; i++, p = p->prox){
 
         printf("======Lista[%d]======\n"
             "\tqtd: %d\n"
@@ -361,7 +374,6 @@ void lista_ofertas(Toferta* p){
 
 void liberaLista(Toferta* p){
     Toferta* liberar=NULL;
-    p=p->prox;  //tirar(ou comentar, em caso de testes) ESSA linha para liberar cabeça também
     while(p!=NULL){
         liberar = p;
         p = p->prox;
@@ -427,4 +439,86 @@ void acaoDeletar(void *data) {
 void acaoMenuVendas(void *data) {
     Toferta *cabeca = (Toferta*) data;
     vendasMenu(cabeca);
+}
+
+void grava_vet(void* vet, const char* arq, int size_elem, int* tam){
+    
+    FILE* file=fopen(arq, "wb");
+    if(file==NULL){
+        printf("ERRO ao gravar arquivo binário!\n");
+        return;
+    }
+
+    fwrite(vet, size_elem, (*tam), file);
+    
+    
+    fclose(file);
+}
+
+void* resgata_vet(const char* arq, int size_elem, int* tam){
+    void* vet = NULL;
+    //Tproduto aux;
+
+    FILE* file=fopen(arq, "ab");  //abre e fecha arquivo com apend
+    if(file==NULL){
+        printf("ERRO ao abrir/criar arquivo binário!\n");
+        return NULL;
+    }
+    fclose(file);  //garante que o arquivo sempre exista
+
+
+    file=fopen(arq, "rb");
+    if(file==NULL){
+        printf("ERRO ao gravar arquivo binário!\n");
+        return NULL;
+    }
+
+    while(1){
+        char aux[size_elem];
+
+        
+        //casting para algo que tem 1 byte para usar aritmética
+        if(fread(aux, size_elem, 1, file) != 1) break;
+
+        void* temp = realloc(vet, ((*tam)+1)*size_elem);
+        if(temp == NULL){
+            printf("Erro ao alocar memoria\n");
+            free(vet);
+            fclose(file);
+            return NULL;
+        }
+        vet = temp;
+
+        for(int i=0; i<size_elem; i++){
+            ((char*)vet)[*tam * size_elem + i] = aux[i];
+        }
+
+        (*tam)++;
+    }
+    
+    fclose(file);
+    return vet;
+}
+
+Toferta* listaEmVet(Toferta* p){
+    if(qtd_ofertas == 0){
+        printf("Lista vazia!\n");
+        return NULL;
+    }
+    Toferta* vetor = malloc(qtd_ofertas*sizeof(Toferta));
+    for(int i=0; i<qtd_ofertas; i++){
+        vetor[i] = *p;
+        p=p->prox;
+    }
+    return vetor;
+}
+
+void vetEmLista(Toferta* vet, Toferta** head){
+    for(int i=0; i<qtd_ofertas; i++){
+        Toferta* novo = malloc(sizeof(Toferta));
+        *novo = vet[i];
+        novo->prox = *head;
+        *head = novo;
+    }
+
 }

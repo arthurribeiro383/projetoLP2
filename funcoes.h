@@ -9,6 +9,7 @@ typedef void(*notificar)(const char*); //tipo 'notificar' é uma função void q
 //Variaveis globais:
 extern int qtdProdutos; //Contador de produtos cadastrados (variavel global)
 extern int qtd_alertas; //serve para ambos os sistemas de notificação
+extern int qtd_ofertas;
 
 //ESTRUTURAS:
 typedef struct custom_noti{
@@ -44,11 +45,13 @@ int buscaProduto_ID(Tproduto[], int id); //Busca o produto por ID e retorna indi
 
 
 //FUNCOES DE OFERTA:
-void vendasMenu(Toferta*); //Função para executar e controlar o menu de vendas
-void registrar_oferta(Toferta*);  //Parâmetro de entrada: ptr para cabeça da lista(preferencial criar no main)
-void excluir_oferta(Toferta*);
+void vendasMenu(Toferta**); //Função para executar e controlar o menu de vendas
+void registrar_oferta(Toferta**);  //Parâmetro de entrada: ptr para cabeça da lista(preferencial criar no main)
+void excluir_oferta(Toferta**);
 void lista_ofertas(Toferta*);  //imprime todas as ofertas
 void liberaLista(Toferta*);  //libera a lista inteira EXCETO A CABEÇA(liberar no main ou modificar função)Isso facilita reutilização da cabeça se necessário
+Toferta* listaEmVet(Toferta*); //transforma a lista em vetor para ser gravado
+void vetEmLista(Toferta*, Toferta**); //transforma vetor resgatado em lista
 
 //FUNCOES DE ALERTA:
 void alerta_email(const char* msg);
@@ -76,6 +79,15 @@ void acaoDeletar(void *data);
 void acaoMenuVendas(void *data);
 
 typedef void (*Callback)(void*);
+
+
+//FUNÇÕES DE ARQUIVO
+//entrada: ptr void para o vetor, nome do arq a ser aberto, tamanho de cada elemento, ptr tamanho do vetor
+void grava_vet(void*, const char*, int, int*);
+
+//entrada: nome do arq a ser aberto, tamanho de cada elemento, ptr tamanho do vetor
+//Devolve o vetor resgatado do arquivo
+void* resgata_vet(const char*, int, int*);
 
 
 #endif
