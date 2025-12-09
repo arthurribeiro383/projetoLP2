@@ -29,7 +29,6 @@ typedef struct
 } Tproduto;
 
 typedef struct Toferta{
-    char vendedor[50];
     char nome[50];
     int qtd;
     float valor;

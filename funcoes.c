@@ -278,11 +278,6 @@ void registrar_oferta(Toferta* head){
     fgets(nova->nome, 50, stdin);
     nova->nome[strcspn(nova->nome, "\n")] = '\0'; //tira o '\n'
 
-    printf("Insira o nome do vendedor: ");
-    fgets(nova->vendedor, 50, stdin);
-    nova->vendedor[strcspn(nova->vendedor, "\n")] = '\0'; //tira o '\n'
-
-
     printf("Insira a quantidade de itens da oferta: ");
     scanf("%d", &nova->qtd);
 
@@ -340,8 +335,7 @@ void lista_ofertas(Toferta* p){
         printf("======Lista[%d]======\n"
             "\tqtd: %d\n"
             "\tValor: %.2f\n"
-            "\tNome: %s\n" 
-            "\tVendedor: %s\n", i+1, p->qtd, p->valor, p->nome, p->vendedor);
+            "\tNome: %s\n" , i+1, p->qtd, p->valor, p->nome);
             printf("\n");
     }
 
