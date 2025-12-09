@@ -11,7 +11,7 @@ int main (void)
     registrar_alerta_custom(alerta_email, "E-mail");
     registrar_alerta_custom(alerta_sistema, "Sistema");
 
-    int resposta, id_del;
+    int resposta;
     Tproduto* produtos = NULL; // Array para armazenar os produtos
     produtos = (Tproduto*)resgata_vet("produtos.dat", sizeof(Tproduto), &qtdProdutos);
 

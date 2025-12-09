@@ -285,7 +285,7 @@ void registrar_oferta(Toferta** head){
         return;
     }
 
-    char notificacao[120];
+    char notificacao[256];
 
     printf("Insira o nome do produto: ");
     fgets(nova->nome, 50, stdin);
@@ -303,7 +303,7 @@ void registrar_oferta(Toferta** head){
     nova->prox = *head; //adiciona 'nova' depois da cabeça
     *head = nova;  //liga 'cabeça' à 'nova'
 
-    snprintf(notificacao, 120, "Nova oferta adicionada\n    Nome->%s\n    Quantidade->%d\n    Valor->%.2f\n", nova->nome, nova->qtd, nova->valor);
+    snprintf(notificacao, sizeof(notificacao), "Nova oferta adicionada\n    Nome->%49s\n    Quantidade->%d\n    Valor->%.2f\n", nova->nome, nova->qtd, nova->valor);
     option_alerta_custom();
     notificar_all_custom(notificacao);
 
@@ -337,7 +337,7 @@ void excluir_oferta(Toferta** head){
     }
 
 
-    snprintf(notificacao, 100, "Oferta esgotada\n    Nome->%s\n    Quantidade->%d\n    Valor->%.2f\n", p->nome, p->qtd, p->valor); //nesse momento p é p nó a ser excluído
+    snprintf(notificacao, sizeof(notificacao), "Oferta esgotada\n    Nome->%49s\n    Quantidade->%d\n    Valor->%.2f\n", p->nome, p->qtd, p->valor); //nesse momento p é p nó a ser excluído
     option_alerta_custom();
     notificar_all_custom(notificacao);
 
@@ -520,3 +520,11 @@ void vetEmLista(Toferta* vet, Toferta** head){
     }
 
 }
+
+void substituirVirgulaPorPonto(char *str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == ',')
+            str[i] = '.';
+    }
+}
+
