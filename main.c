@@ -30,7 +30,7 @@ int main (void)
     acaoMenuVendas    // 5
 };
 
-
+    limpaTela();
     do 
     {
         cabecalho();

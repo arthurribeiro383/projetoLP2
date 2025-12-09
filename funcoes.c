@@ -36,6 +36,7 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
 
         if (strcmp(nome_temp, "0") == 0) //se o digitador for 0, sai
         {
+            limpaTela();
             break;
         }
         
@@ -72,31 +73,42 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
     return produtos;
 }
 
-// Implementacao da funcao para listar produtos
-void listarProdutosRecursivo(Tproduto produtos[], int indice)
-{
-    printf(COR_TITULO "Lista de produtos:\n\n" COR_RESET);
-    printf("_______________________\n");
-    if (indice == qtdProdutos)
-        return;
-    
+
+void listarProdutosRecursivo(Tproduto *produtos, int i) {
+
     if (qtdProdutos == 0) {
         printf(COR_ERRO "Nenhum produto cadastrado.\n" COR_RESET);
         return;
     }
-    
-    printf("%-4s | %-30s | %-6s | %-8s | %-10s\n", "ID", "Nome", "Qtd", "Preco", "Status");
-    printf("-----+--------------------------------+-------+----------+------------\n");
-    printf("%-4d | %-30s | %-6d | R$%6.2f | ", produtos[indice].id, produtos[indice].nome, produtos[indice].quantidade, produtos[indice].preco);
-        
-    if (produtos[indice].status & ESGOTADO)
-        printf(COR_ERRO "ESGOTADO" COR_RESET);
-    else
-        printf(COR_OK "DISPONIVEL" COR_RESET);
 
-    printf("\n");
-    listarProdutosRecursivo(produtos, indice + 1);
+    if (i == 0) {
+        printf(COR_TITULO "Lista de produtos:\n\n" COR_RESET);
+
+        printf("%-4s | %-30s | %-6s | %-8s | %-10s\n",
+               "ID", "Nome", "Qtd", "Preco", "Status");
+
+        printf("-----+--------------------------------+-------+----------+------------\n");
+    }
+
+    if (i >= qtdProdutos) {
+        return;
+    }
+
+    printf("%-4d | %-30s | %-6d | R$%6.2f | ",
+           produtos[i].id,
+           produtos[i].nome,
+           produtos[i].quantidade,
+           produtos[i].preco);
+
+    if (produtos[i].status & ESGOTADO)
+        printf(COR_ERRO "ESGOTADO" COR_RESET "\n");
+    else
+        printf(COR_OK "DISPONIVEL" COR_RESET "\n");
+
+    // Chamada recursiva
+    listarProdutosRecursivo(produtos, i + 1);
 }
+
 
 
 // Implementacao da funcao para atualizar estoque
@@ -114,7 +126,8 @@ void atualizarEstoque(Tproduto produtos[])
                 switch (respostaParaListagemAtt)
                 {
                     case 1:
-                        listarProdutos(produtos);
+                        printf("\nListagem de produtos:\n");
+                        listarProdutosRecursivo(produtos, 0);
                         break;
                     case 0:
                         break;
@@ -398,12 +411,11 @@ void notificar_all_custom(const char* msg){
 }
 
 void acaoListar(void *data) {
-    Tproduto *produtos = (Tproduto*) data;
-    if (qtdProdutos == 0)
-        printf("Nenhum produto cadastrado.\n");
-    else
-        listarProdutos(produtos);
+    limpaTela();
+    listarProdutosRecursivo((Tproduto*)data, 0);
 }
+
+
 
 void acaoAtualizar(void *data) {
     Tproduto *produtos = (Tproduto*) data;

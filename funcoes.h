@@ -38,7 +38,7 @@ typedef struct Toferta{
 
 //FUNCOES DO ESTOQUE: 
 Tproduto* cadastrarProduto(Tproduto produto[]);
-void listarProdutos(Tproduto produtos[]);
+void listarProdutosRecursivo(Tproduto produtos[], int indice);
 void atualizarEstoque(Tproduto produtos[]);
 void deletarProduto(Tproduto[], int id);
 int buscaProduto_ID(Tproduto[], int id); //Busca o produto por ID e retorna indice. "-1 = Produto nao encontrado"
