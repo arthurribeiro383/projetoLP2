@@ -435,7 +435,7 @@ void acaoDeletar(void *data) {
 }
 
 void acaoMenuVendas(void *data) {
-    Toferta *cabeca = (Toferta*) data;
+    Toferta **cabeca = (Toferta**) data;
     vendasMenu(cabeca);
 }
 
