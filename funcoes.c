@@ -380,7 +380,7 @@ void liberaLista(Toferta* p){
 }
 
 void alerta_email(const char* msg){
-    printf("\nEmail enviado automaticamente para todos\n%s\n", msg);
+    printf("\nEmail enviado automaticamente para confirmacao\n%s\n", msg);
 }
 
 void alerta_sistema(const char* msg){
@@ -388,7 +388,7 @@ void alerta_sistema(const char* msg){
 }
 
 void alerta_cel(const char* msg){
-    printf("\nMensagem automatica enviada para todos os celulares cadastrados\n%s\n", msg);
+    printf("\nMensagem automatica enviada para confirmacao\n%s\n", msg);
 }
 
 void registrar_alerta_custom(notificar reg, char* descri){
@@ -500,7 +500,6 @@ void* resgata_vet(const char* arq, int size_elem, int* tam){
 
 Toferta* listaEmVet(Toferta* p){
     if(qtd_ofertas == 0){
-        printf("Lista vazia!\n");
         return NULL;
     }
     Toferta* vetor = malloc(qtd_ofertas*sizeof(Toferta));
