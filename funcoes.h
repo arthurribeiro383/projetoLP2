@@ -9,7 +9,6 @@ typedef void(*notificar)(const char*); //tipo 'notificar' é uma função void q
 //Variaveis globais:
 extern int qtdProdutos; //Contador de produtos cadastrados (variavel global)
 extern int qtd_alertas; //serve para ambos os sistemas de notificação
-extern custom_noti noti_mod[MAX_NOTI];  //sistema custom de notificações
 
 //ESTRUTURAS:
 typedef struct custom_noti{
@@ -17,6 +16,8 @@ typedef struct custom_noti{
     char descricao[20];
     notificar alerta;
 }custom_noti;
+
+extern custom_noti noti_mod[MAX_NOTI];  //sistema custom de notificações
 
 typedef struct
 {
@@ -38,7 +39,7 @@ typedef struct Toferta{
 //FUNCOES DO ESTOQUE: 
 Tproduto* cadastrarProduto(Tproduto produto[]);
 void listarProdutos(Tproduto produtos[]);
-Tproduto atualizarEstoque(Tproduto produtos[]);
+void atualizarEstoque(Tproduto produtos[]);
 void deletarProduto(Tproduto[], int id);
 int buscaProduto_ID(Tproduto[], int id); //Busca o produto por ID e retorna indice. "-1 = Produto nao encontrado"
 
