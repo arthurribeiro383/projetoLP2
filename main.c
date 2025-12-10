@@ -1,33 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include"funcoes.h"
+#include "funcoes.h"
 
 
 int main (void)
 {
-
+    // Registra os callbacks de alerta
     registrar_alerta_custom(alerta_cel, "Celular");
     registrar_alerta_custom(alerta_email, "E-mail");
     registrar_alerta_custom(alerta_sistema, "Sistema");
 
     int resposta;
     Tproduto* produtos = NULL; // Array para armazenar os produtos
+    
+    // Resgata produtos do arquivo
     produtos = (Tproduto*)resgata_vet("produtos.dat", sizeof(Tproduto), &qtdProdutos);
 
-    Toferta* cabeca= NULL;
+    Toferta* cabeca = NULL;
+    // Resgata vendas (ofertas) do arquivo e converte para lista
     Toferta* temp_lista_vet = (Toferta*)resgata_vet("vendas.dat", sizeof(Toferta), &qtd_ofertas);
     vetEmLista(temp_lista_vet, &cabeca);
 
+    // Se o vetor temporario foi alocado, liberar agora que ja está na lista
+    if(temp_lista_vet != NULL) {
+        free(temp_lista_vet);
+        temp_lista_vet = NULL;
+    }
 
+    // Configuração do array de ponteiros para funções (Callbacks do menu)
     Callback acoes[] = {
-    NULL,             // índice 0 não usado
-    NULL,             // 1 = cadastrar (não vai para o vetor por causa do parametro diferente)
-    acaoListar,       // 2
-    acaoAtualizar,    // 3
-    acaoDeletar,      // 4
-    acaoMenuVendas    // 5
-};
+        NULL,             // índice 0 não usado
+        NULL,             // 1 = cadastrar (não vai para o vetor por causa do parametro diferente)
+        acaoListar,       // 2
+        acaoAtualizar,    // 3
+        acaoDeletar,      // 4
+        acaoMenuVendas    // 5
+    };
 
     limpaTela();
     do 
@@ -50,8 +59,8 @@ int main (void)
             while (getchar() != '\n');
         }
 
-         if (resposta == 6)
-        break;
+        if (resposta == 6)
+            break;
 
         if (resposta == 1) {
             produtos = cadastrarProduto(produtos);
@@ -63,15 +72,18 @@ int main (void)
 
     } while (1);
 
-    temp_lista_vet=listaEmVet(cabeca);
+    // Salva o estado atual nos arquivos binarios antes de sair
+    temp_lista_vet = listaEmVet(cabeca);
 
     grava_vet((void*)temp_lista_vet, "vendas.dat", sizeof(Toferta), &qtd_ofertas);
     grava_vet((void*)produtos, "produtos.dat", sizeof(Tproduto), &qtdProdutos);
-    free(temp_lista_vet);
-    temp_lista_vet=NULL;
+    
+    // Libera memoria
+    if(temp_lista_vet) free(temp_lista_vet);
     liberaLista(cabeca);
-    cabeca=NULL;
-    free(produtos);
+    cabeca = NULL;
+    if(produtos) free(produtos);
     produtos = NULL;
-    return  0;
+
+    return 0;
 }

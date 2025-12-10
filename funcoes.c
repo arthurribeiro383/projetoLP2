@@ -1,11 +1,21 @@
+#include "funcoes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "funcoes.h"
 
-//FUNCOES DE INTERFACE
+//Inicializacao de Var Globais
+int qtdProdutos = 0;
+int qtd_alertas = 0;
+int qtd_ofertas = 0;
+custom_noti noti_mod[MAX_NOTI];
+
+//================= FUNCOES DE INTERFACE =================
 void limpaTela(void){
-    system("clear");
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
 }
 
 void cabecalho(void){
@@ -14,20 +24,13 @@ void cabecalho(void){
     printf(COR_TITULO "========================================\n\n" COR_RESET);
 }
 
-//Inicializacao de Var Globais
-int qtdProdutos = 0;
-int qtd_alertas = 0;
-int qtd_ofertas = 0;
-custom_noti noti_mod[MAX_NOTI];
-
-//LOGICA PRINCIPAL DO PROGRAMA
-    //PARTE DE PRODUTOS
+//================= PARTE DE PRODUTOS =================
 
 Tproduto* cadastrarProduto(Tproduto* produtos)
-{   char nome_temp[50];
+{   
+    char nome_temp[50];
     while (1)
     {
-
         printf("Insira o nome do produto %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
         fgets(nome_temp, 50, stdin);
         nome_temp[strcspn(nome_temp, "\n")] = 0;
@@ -48,7 +51,6 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
         
         strcpy(produtos[qtdProdutos].nome, nome_temp);
         
-
         printf("Insira o preco do produto(por @): ");
         scanf("%f", &produtos[qtdProdutos].preco);
         while (getchar() != '\n');
@@ -72,7 +74,6 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
 }
 
 void listarProdutosRecursivo(Tproduto *produtos, int i) {
-
     if (qtdProdutos == 0) {
         printf(COR_ERRO "Nenhum produto cadastrado.\n" COR_RESET);
         return;
@@ -80,10 +81,8 @@ void listarProdutosRecursivo(Tproduto *produtos, int i) {
 
     if (i == 0) {
         printf(COR_TITULO "Lista de produtos:\n\n" COR_RESET);
-
         printf("%-4s | %-30s | %-6s | %-8s | %-10s\n",
                "ID", "Nome", "Qtd", "Preco", "Status");
-
         printf("-----+--------------------------------+-------+----------+------------\n");
     }
 
@@ -106,100 +105,97 @@ void listarProdutosRecursivo(Tproduto *produtos, int i) {
     listarProdutosRecursivo(produtos, i + 1);
 }
 
-
-// Implementacao da funcao para atualizar estoque
 void atualizarEstoque(Tproduto produtos[])
 {
     int respostaParaListagemAtt, idParaAtualizar, idEncontradoAtt, selecaoFuncaoAtualizar;
     printf("Deseja listar os produtos cadastrados para adiquirir o id do produto a ser atualizado? (1-Sim / 0-Nao): ");
-                scanf("%d", &respostaParaListagemAtt);
-                while (respostaParaListagemAtt < 0 || respostaParaListagemAtt > 1)
-                {
-                    printf("Resposta invalida. Tente novamente: ");
-                    scanf("%d", &respostaParaListagemAtt);
-                }
+    scanf("%d", &respostaParaListagemAtt);
+    while (respostaParaListagemAtt < 0 || respostaParaListagemAtt > 1)
+    {
+        printf("Resposta invalida. Tente novamente: ");
+        scanf("%d", &respostaParaListagemAtt);
+    }
 
-                switch (respostaParaListagemAtt)
-                {
-                    case 1:
-                        printf("\nListagem de produtos:\n");
-                        listarProdutosRecursivo(produtos, 0);
-                        break;
-                    case 0:
-                        break;
-                }
+    switch (respostaParaListagemAtt)
+    {
+        case 1:
+            printf("\nListagem de produtos:\n");
+            listarProdutosRecursivo(produtos, 0);
+            break;
+        case 0:
+            break;
+    }
 
-                printf("Insira o ID do produto a ser atualizado: ");
-                scanf("%d", &idParaAtualizar);
-                idEncontradoAtt = buscaProduto_ID(produtos, idParaAtualizar);
-                if (idEncontradoAtt == -1) 
-                    return;
+    printf("Insira o ID do produto a ser atualizado: ");
+    scanf("%d", &idParaAtualizar);
+    idEncontradoAtt = buscaProduto_ID(produtos, idParaAtualizar);
+    if (idEncontradoAtt == -1) 
+        return;
 
-                printf("O que deseja atualizar no produto selecionado?\n");
-                printf("1. Nome\n");
-                printf("2. Preco\n");
-                printf("3. Quantidade\n");
-                printf("4. Tudo\n");
-                printf("Escolha: ");
-                scanf("%d", &selecaoFuncaoAtualizar);
-                while (selecaoFuncaoAtualizar < 1 || selecaoFuncaoAtualizar > 4)
-                {
-                    printf("Resposta invalida. Tente novamente: ");
-                    scanf("%d", &selecaoFuncaoAtualizar);
-                }
+    printf("O que deseja atualizar no produto selecionado?\n");
+    printf("1. Nome\n");
+    printf("2. Preco\n");
+    printf("3. Quantidade\n");
+    printf("4. Tudo\n");
+    printf("Escolha: ");
+    scanf("%d", &selecaoFuncaoAtualizar);
+    while (selecaoFuncaoAtualizar < 1 || selecaoFuncaoAtualizar > 4)
+    {
+        printf("Resposta invalida. Tente novamente: ");
+        scanf("%d", &selecaoFuncaoAtualizar);
+    }
 
-                switch (selecaoFuncaoAtualizar)
-                {
-                    case 1:
-                        while (getchar() != '\n');
-                        printf("Insira o novo nome do produto: ");
-                        fgets(produtos[idEncontradoAtt].nome, 50, stdin);
-                        produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
-                        printf("Nome atualizado com sucesso!\n");
-                        break;
-                    
-                    case 2:
-                        printf("Insira o novo preco do produto(por @): ");
-                        scanf("%f", &produtos[idEncontradoAtt].preco);
-                        printf("Preco atualizado com sucesso!\n");
-                        break;
-                    
-                    case 3:
-                        printf("Insira a nova quantidade do produto: ");
-                        scanf("%d", &produtos[idEncontradoAtt].quantidade);
-                         if (produtos[idEncontradoAtt].quantidade == 0)
-                            produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
-                        else{
-                            produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
-                            }
-                        printf("Quantidade atualizada com sucesso!\n");
-                        break;
-                    
-                    case 4:
-                        while (getchar() != '\n');
-                        printf("Insira o novo nome do produto: ");
-                        fgets(produtos[idEncontradoAtt].nome, 50, stdin);
-                        produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
-                        
-                        printf("Insira o novo preco do produto(por @): ");
-                        scanf("%f", &produtos[idEncontradoAtt].preco);
-                        
-                        printf("Insira a nova quantidade do produto: ");
-                        scanf("%d", &produtos[idEncontradoAtt].quantidade);
-                        if (produtos[idEncontradoAtt].quantidade == 0)
-                            produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
-                        else{
-                            produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
-                        }
-                        printf("Produto atualizado com sucesso!\n");
-                        break;
+    switch (selecaoFuncaoAtualizar)
+    {
+        case 1:
+            while (getchar() != '\n');
+            printf("Insira o novo nome do produto: ");
+            fgets(produtos[idEncontradoAtt].nome, 50, stdin);
+            produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
+            printf("Nome atualizado com sucesso!\n");
+            break;
+        
+        case 2:
+            printf("Insira o novo preco do produto(por @): ");
+            scanf("%f", &produtos[idEncontradoAtt].preco);
+            printf("Preco atualizado com sucesso!\n");
+            break;
+        
+        case 3:
+            printf("Insira a nova quantidade do produto: ");
+            scanf("%d", &produtos[idEncontradoAtt].quantidade);
+                if (produtos[idEncontradoAtt].quantidade == 0)
+                produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
+            else{
+                produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
                 }
+            printf("Quantidade atualizada com sucesso!\n");
+            break;
+        
+        case 4:
+            while (getchar() != '\n');
+            printf("Insira o novo nome do produto: ");
+            fgets(produtos[idEncontradoAtt].nome, 50, stdin);
+            produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
+            
+            printf("Insira o novo preco do produto(por @): ");
+            scanf("%f", &produtos[idEncontradoAtt].preco);
+            
+            printf("Insira a nova quantidade do produto: ");
+            scanf("%d", &produtos[idEncontradoAtt].quantidade);
+            if (produtos[idEncontradoAtt].quantidade == 0)
+                produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
+            else{
+                produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
+            }
+            printf("Produto atualizado com sucesso!\n");
+            break;
+    }
 }
 
 int buscaProduto_ID(Tproduto vet[], int id)
 {
     int i, achou=0;
-
     //Faz a busca pelo ID fornecido em todo o vetor
     for(i=0; i<qtdProdutos; i++)
     {
@@ -243,39 +239,41 @@ void deletarProduto(Tproduto vet[], int id)
     printf(COR_OK "Produto excluido com sucesso!\n" COR_RESET);
 }
 
+//================= PARTE DE VENDAS =================
+
 void vendasMenu(Toferta** cabeca){
     int option=0;
 
     do{
-    cabecalho();
-    printf(COR_TITULO "======MENU DE VENDAS======\n" COR_RESET);
+        cabecalho();
+        printf(COR_TITULO "======MENU DE VENDAS======\n" COR_RESET);
         printf("1. Registrar Oferta\n");
         printf("2. Excluir Oferta\n");
         printf("3. Mostrar Ofertas\n");
         printf("4. Sair\n");
         printf("Selecione opcao desejada: ");
-    scanf("%d", &option);
-    while (getchar() != '\n');
+        scanf("%d", &option);
+        while (getchar() != '\n');
 
-    switch(option){
-        case 1:
-            registrar_oferta(cabeca);
-            break;
-        case 2:
-            excluir_oferta(cabeca);            
-            break;
-        case 3:
-            lista_ofertas(*cabeca);
-            break;
-        case 4: 
-            printf("Obrigado! Volte sempre!!!\n");
-            return;
-        default: 
-            printf("Opcao invalida! Tente Novamente\n!");
-            break;
-    }
+        switch(option){
+            case 1:
+                registrar_oferta(cabeca);
+                break;
+            case 2:
+                excluir_oferta(cabeca);            
+                break;
+            case 3:
+                lista_ofertas(*cabeca);
+                break;
+            case 4: 
+                printf("Obrigado! Volte sempre!!!\n");
+                return;
+            default: 
+                printf("Opcao invalida! Tente Novamente\n!");
+                break;
+        }
 
-    }while(option >= 1 && option <= 3);
+    } while(option >= 1 && option <= 3);
 }
 
 void registrar_oferta(Toferta** head){
@@ -297,8 +295,6 @@ void registrar_oferta(Toferta** head){
     printf("Insira o valor da oferta: ");
     scanf("%f", &nova->valor);
     while (getchar() != '\n');
-
-    
 
     nova->prox = *head; //adiciona 'nova' depois da cabeça
     *head = nova;  //liga 'cabeça' à 'nova'
@@ -336,7 +332,6 @@ void excluir_oferta(Toferta** head){
         return;
     }
 
-
     snprintf(notificacao, sizeof(notificacao), "Oferta esgotada\n    Nome->%49s\n    Quantidade->%d\n    Valor->%.2f\n", p->nome, p->qtd, p->valor); //nesse momento p é p nó a ser excluído
     option_alerta_custom();
     notificar_all_custom(notificacao);
@@ -351,7 +346,6 @@ void excluir_oferta(Toferta** head){
     qtd_ofertas--;
 
     printf(COR_OK "Oferta excluída!\n" COR_RESET);
-
 }
 
 void lista_ofertas(Toferta* p){
@@ -359,7 +353,6 @@ void lista_ofertas(Toferta* p){
     printf(COR_TITULO "\n======INICIO DA LISTA=====\n" COR_RESET);
 
     for(i=0; p != NULL; i++, p = p->prox){
-
         printf("======Lista[%d]======\n"
             "\tqtd: %d\n"
             "\tValor: %.2f\n"
@@ -379,8 +372,11 @@ void liberaLista(Toferta* p){
     }
 }
 
+//================= FUNCOES DE ALERTA =================
+
 void alerta_email(const char* msg){
-    printf("\nEmail enviado automaticamente para todos\n%s\n", msg);
+    // Texto padronizado
+    printf("\nEmail enviado automaticamente para confirmacao (Todos)\n%s\n", msg);
 }
 
 void alerta_sistema(const char* msg){
@@ -414,12 +410,12 @@ void notificar_all_custom(const char* msg){
     }
 }
 
+//================= FUNCOES CALLBACK (MENU) =================
+
 void acaoListar(void *data) {
     limpaTela();
     listarProdutosRecursivo((Tproduto*)data, 0);
 }
-
-
 
 void acaoAtualizar(void *data) {
     Tproduto *produtos = (Tproduto*) data;
@@ -439,8 +435,9 @@ void acaoMenuVendas(void *data) {
     vendasMenu(cabeca);
 }
 
+//================= FUNCOES DE ARQUIVO =================
+
 void grava_vet(void* vet, const char* arq, int size_elem, int* tam){
-    
     FILE* file=fopen(arq, "wb");
     if(file==NULL){
         printf("ERRO ao gravar arquivo binário!\n");
@@ -448,33 +445,28 @@ void grava_vet(void* vet, const char* arq, int size_elem, int* tam){
     }
 
     fwrite(vet, size_elem, (*tam), file);
-    
-    
     fclose(file);
 }
 
 void* resgata_vet(const char* arq, int size_elem, int* tam){
     void* vet = NULL;
-    //Tproduto aux;
-
-    FILE* file=fopen(arq, "ab");  //abre e fecha arquivo com apend
+    
+    FILE* file=fopen(arq, "ab");  //abre e fecha arquivo com append para garantir existência
     if(file==NULL){
         printf("ERRO ao abrir/criar arquivo binário!\n");
         return NULL;
     }
-    fclose(file);  //garante que o arquivo sempre exista
-
+    fclose(file); 
 
     file=fopen(arq, "rb");
     if(file==NULL){
-        printf("ERRO ao gravar arquivo binário!\n");
+        printf("ERRO ao ler arquivo binário!\n"); // Correção: Era "gravar" no original
         return NULL;
     }
 
     while(1){
-        char aux[size_elem];
+        char aux[size_elem]; // Buffer temporário do tamanho do elemento
 
-        
         //casting para algo que tem 1 byte para usar aritmética
         if(fread(aux, size_elem, 1, file) != 1) break;
 
@@ -500,7 +492,7 @@ void* resgata_vet(const char* arq, int size_elem, int* tam){
 
 Toferta* listaEmVet(Toferta* p){
     if(qtd_ofertas == 0){
-        printf("Lista vazia!\n");
+        // Removido o print para não poluir a saída ao sair do programa
         return NULL;
     }
     Toferta* vetor = malloc(qtd_ofertas*sizeof(Toferta));
@@ -512,13 +504,13 @@ Toferta* listaEmVet(Toferta* p){
 }
 
 void vetEmLista(Toferta* vet, Toferta** head){
-    for(int i=0; i<qtd_ofertas; i++){
+    // Correção: Loop reverso para manter a ordem da lista ligada original
+    for(int i = qtd_ofertas - 1; i >= 0; i--){
         Toferta* novo = malloc(sizeof(Toferta));
         *novo = vet[i];
         novo->prox = *head;
         *head = novo;
     }
-
 }
 
 void substituirVirgulaPorPonto(char *str) {
@@ -527,4 +519,3 @@ void substituirVirgulaPorPonto(char *str) {
             str[i] = '.';
     }
 }
-
