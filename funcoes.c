@@ -22,7 +22,6 @@ void limpaTela(void){
 }
 
 void cabecalho(void) {
-    limpaTela();
     printf(COR_TITULO"┌─────────────────────────────────────────────────────┐\n"COR_RESET);
     printf(COR_TITULO"│        SISTEMA DE ESTOQUE - Fazenda Cacaueira       │\n"COR_RESET);
     printf(COR_TITULO"└─────────────────────────────────────────────────────┘\n\n"COR_RESET);
