@@ -2,7 +2,6 @@
 #include "funcoes.h"
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> /* usleep */
 #include <time.h>
 #include <ctype.h>
 
