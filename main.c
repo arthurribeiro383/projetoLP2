@@ -16,6 +16,8 @@ int main (void)
     
     // Resgata produtos do arquivo
     produtos = (Tproduto*)resgata_vet("produtos.dat", sizeof(Tproduto), &qtdProdutos);
+    //produtos = carregarProdutosCSV("produtos.csv");
+
 
     Toferta* cabeca = NULL;
     // Resgata vendas (ofertas) do arquivo e converte para lista
@@ -77,6 +79,8 @@ int main (void)
 
     grava_vet((void*)temp_lista_vet, "vendas.dat", sizeof(Toferta), &qtd_ofertas);
     grava_vet((void*)produtos, "produtos.dat", sizeof(Tproduto), &qtdProdutos);
+    //salvarProdutosCSV("produtos.csv", produtos);
+
     
     // Libera memoria
     if(temp_lista_vet) free(temp_lista_vet);

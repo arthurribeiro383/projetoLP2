@@ -568,15 +568,15 @@ void* resgata_vet(const char* arq, int size_elem, int* tam){
 }
 void salvarProdutosCSV(const char *nomeArq, Tproduto *produtos) {
     FILE *f = fopen(nomeArq, "w");
-    if (!f) { perror("fopen"); return; }
-    for (int i = 0; i < qtdProdutos; i++) {
-        fprintf(f, "%d;%s;%d;%.2f;%u\n",
-                produtos[i].id,
-                produtos[i].nome,
-                produtos[i].quantidade,
-                produtos[i].preco,
-                (unsigned int)produtos[i].status);
+    if (!f) {
+        perror("fopen");
+        return;
     }
+
+    for (int i = 0; i < qtdProdutos; i++) {
+        fprintf(f, "%d;%s;%d;%.2f;%u\n",produtos[i].id,produtos[i].nome,produtos[i].quantidade,produtos[i].preco,(unsigned int)produtos[i].status);
+    }
+
     fclose(f);
     printf(COR_OK "Dados salvos em %s\n" COR_RESET, nomeArq);
 }
@@ -596,12 +596,7 @@ Tproduto* carregarProdutosCSV(const char *nomeArq) {
         }
 
         unsigned int status;
-        sscanf(linha, "%d;%49[^;];%d;%f;%u",
-               &produtos[qtdProdutos].id,
-               produtos[qtdProdutos].nome,
-               &produtos[qtdProdutos].quantidade,
-               &produtos[qtdProdutos].preco,
-               &status);
+        sscanf(linha, "%d;%49[^;];%d;%f;%u",&produtos[qtdProdutos].id,produtos[qtdProdutos].nome,&produtos[qtdProdutos].quantidade,&produtos[qtdProdutos].preco,&status);
         produtos[qtdProdutos].status = (unsigned char)status;
         qtdProdutos++;
     }
