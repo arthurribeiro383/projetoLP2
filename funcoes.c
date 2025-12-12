@@ -77,6 +77,7 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
             free(produtos);
             return NULL;
         }
+        
         produtos = temp;
         
         strcpy(produtos[qtdProdutos].nome, nome_temp);
