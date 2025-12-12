@@ -452,7 +452,6 @@ void liberaLista(Toferta* p){
 
 Toferta* listaEmVet(Toferta* p){
     if(qtd_ofertas == 0){
-        // Removido o print para não poluir a saída ao sair do programa
         return NULL;
     }
     Toferta* vetor = malloc(qtd_ofertas*sizeof(Toferta));
@@ -464,7 +463,6 @@ Toferta* listaEmVet(Toferta* p){
 }
 
 void vetEmLista(Toferta* vet, Toferta** head){
-    // Correção: Loop reverso para manter a ordem da lista ligada original
     for(int i = qtd_ofertas - 1; i >= 0; i--){
         Toferta* novo = malloc(sizeof(Toferta));
         *novo = vet[i];
@@ -535,7 +533,7 @@ void* resgata_vet(const char* arq, int size_elem, int* tam){
 
     file=fopen(arq, "rb");
     if(file==NULL){
-        printf("ERRO ao ler arquivo binário!\n"); // Correção: Era "gravar" no original
+        printf("ERRO ao ler arquivo binário!\n"); 
         return NULL;
     }
 
@@ -564,6 +562,7 @@ void* resgata_vet(const char* arq, int size_elem, int* tam){
     fclose(file);
     return vet;
 }
+
 void salvarProdutosCSV(const char *nomeArq, Tproduto *produtos) {
     FILE *f = fopen(nomeArq, "w");
     if (!f) {
