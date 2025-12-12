@@ -324,20 +324,22 @@ int cmpQtd(const void *a, const void *b) {
 
 //Funcoes de Oferta
 void vendasMenu(Toferta** cabeca){
-    int option=0;
+    int opc=0;
 
     do{
         cabecalho();
-        printf(COR_TITULO "======MENU DE VENDAS======\n" COR_RESET);
+        printf(COR_TITULO"┌─────────────────────────────────────────────────────┐\n"COR_RESET);
+        printf(COR_TITULO"│                  MENU DE VENDAS                     │\n"COR_RESET);
+        printf(COR_TITULO"└─────────────────────────────────────────────────────┘\n\n"COR_RESET);
         printf("1. Registrar Oferta\n");
         printf("2. Excluir Oferta\n");
         printf("3. Mostrar Ofertas\n");
         printf("4. Voltar\n");
         printf("Escolha: ");
-        scanf("%d", &option);
+        scanf("%d", &opc);
         while (getchar() != '\n');
 
-        switch(option){
+        switch(opc){
             case 1:
                 registrar_oferta(cabeca);
                 break;
@@ -354,8 +356,7 @@ void vendasMenu(Toferta** cabeca){
                 printf(COR_ERRO"Opcao invalida! Tente Novamente\n!"COR_RESET);
                 break;
         }
-        Pause();
-    } while(option >= 1 && option <= 3);
+    } while(opc >= 1 && opc <= 3);
 }
 
 void registrar_oferta(Toferta** head){
@@ -373,6 +374,7 @@ void registrar_oferta(Toferta** head){
 
     printf("Insira a quantidade de itens da oferta: ");
     scanf("%d", &nova->qtd);
+    while (getchar() != '\n');
 
     printf("Insira o valor da oferta: ");
     scanf("%f", &nova->valor);
@@ -381,7 +383,7 @@ void registrar_oferta(Toferta** head){
     nova->prox = *head; //adiciona 'nova' depois da cabeça
     *head = nova;  //liga 'cabeça' à 'nova'
 
-    snprintf(notificacao, sizeof(notificacao), "Nova oferta adicionada\n    Nome->%49s\n    Quantidade->%d\n    Valor->%.2f\n", nova->nome, nova->qtd, nova->valor);
+    snprintf(notificacao, sizeof(notificacao), COR_INFO"Nova oferta adicionada\n    Nome->%49s\n    Quantidade->%d\n    Valor->%.2f\n"COR_RESET, nova->nome, nova->qtd, nova->valor);
     option_alerta_custom();
     notificar_all_custom(notificacao);
 
