@@ -5,16 +5,16 @@
 
 // Definições e macros
 #define ESGOTADO 1 // 0000 0001
-#define MAX_NOTI 3 //maximo de notificações diferentes
+#define MAX_NOTI 3 // Maximo de notificações diferentes
 #define TAM_NOME 50
 
-// Cores para interface
-#define COR_RESET  "\x1b[0m"
-#define COR_TITULO "\x1B[36m"
-#define COR_MENU   "\x1b[34m"
-#define COR_OK     "\x1b[32m"
-#define COR_INFO   "\x1b[33m"
-#define COR_ERRO   "\x1b[31m"
+// Cores para interface (ANSI em HEX)
+#define COR_RESET  "\x1b[0m" //Padrão
+#define COR_TITULO "\x1b[36m" //Ciano
+#define COR_MENU   "\x1b[34m" //Azul
+#define COR_OK     "\x1b[32m" //Verde
+#define COR_INFO   "\x1b[33m" //Amarelo
+#define COR_ERRO   "\x1b[31m" //Vermelho
 
 // Menu Callback
 typedef void(*notificar)(const char*); //tipo 'notificar' é uma função void que recebe char*.
@@ -52,13 +52,12 @@ extern custom_noti noti_mod[MAX_NOTI];
 // Funcoes de Interface
 void limpaTela(void);
 void cabecalho(void);
-void Pause (void);
 
 // Funcoes de Menu (Callbacks)
 void acaoListar(void *produtos);
-void acaoAtualizar(void *data);
-void acaoDeletar(void *data);
-void acaoMenuVendas(void *data);
+void acaoAtualizar(void *produtos);
+void acaoDeletar(void *produtos);
+void acaoMenuVendas(void *cabeca);
 
 // Funcoes de Estoque
 Tproduto* cadastrarProduto(Tproduto* produtos);

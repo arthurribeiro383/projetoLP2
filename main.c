@@ -32,12 +32,12 @@ int main (void)
 
     // Configuração do array de ponteiros para funções (Callbacks do menu)
     Callback acoes[] = {
-        NULL,             // índice 0 não usado
-        NULL,             // 1 = cadastrar (não vai para o vetor por causa do parametro diferente)
-        acaoListar,       // 2
-        acaoAtualizar,    // 3
-        acaoDeletar,      // 4
-        acaoMenuVendas    // 5
+        NULL,             // idx 0
+        NULL,             // idx = cadastrar (não vai para o vetor por causa do parametro diferente)
+        acaoListar,       // 1
+        acaoAtualizar,    // 2
+        acaoDeletar,      // 3
+        acaoMenuVendas    // 4
     };
 
     limpaTela();

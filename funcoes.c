@@ -1,8 +1,8 @@
-#define _GNU_SOURCE //Ativa recursos extras da biblioteca padrão (snprintf)
+#define _GNU_SOURCE // Ativa recursos extras da biblioteca padrão (snprintf, por exemplo)
 #include "funcoes.h"
 #include <stdlib.h> // Alocação dinâmica e Qsort
 #include <string.h>
-#include <ctype.h> //Tratamento de caracteres e validação
+#include <unistd.h>
 
 // Inicializacao de Var Globais
 int qtdProdutos = 0;
@@ -25,53 +25,48 @@ void cabecalho(void) {
     printf(COR_TITULO"└─────────────────────────────────────────────────────┘\n\n"COR_RESET);
 }
 
-void Pause(void) {
-    printf("\nPressione ENTER para continuar...");
-    while (getchar() != '\n');
-}
-
 // Funcoes de Menu (Callbacks)
 void acaoListar(void *produtos) {
     limpaTela();
     listarProdutos((Tproduto*)produtos);
 }
 
-void acaoAtualizar(void *data) {
-    Tproduto *produtos = (Tproduto*)data;
-    atualizarEstoque(produtos);
+void acaoAtualizar(void *produtos) {
+    Tproduto *produtosDF = (Tproduto*)produtos;
+    atualizarEstoque(produtosDF);
 }
 
-void acaoDeletar(void *data) {
-    Tproduto *produtos = (Tproduto*) data;
+void acaoDeletar(void *produtos) {
+    Tproduto *produtosDF = (Tproduto*) produtos;
     int id_del;
-    printf("Insira o ID do produto a ser excluido: ");
+    printf(COR_INFO"Insira o ID do produto a ser excluido: "COR_RESET);
     scanf("%d", &id_del);
-    deletarProduto(produtos, id_del);
+    deletarProduto(produtosDF, id_del);
 }
 
-void acaoMenuVendas(void *data) {
-    Toferta **cabeca = (Toferta**) data;
-    vendasMenu(cabeca);
+void acaoMenuVendas(void *cabeca) {
+    Toferta **cabecaDF = (Toferta**) cabeca;
+    vendasMenu(cabecaDF);
 }
 
 //Parte de produtos
-
-Tproduto* cadastrarProduto(Tproduto* produtos)
-{   
+Tproduto* cadastrarProduto(Tproduto* produtos){   
     char nome_temp[TAM_NOME];
     while (1)
     {
-        printf("Insira o nome do produto: %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
+        printf("Insira o nome do produto %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
         fgets(nome_temp, TAM_NOME, stdin);
         nome_temp[strcspn(nome_temp, "\n")] = 0;
 
-        if (strcmp(nome_temp, "0") == 0) //se o digitador for 0, sai
-        {
+        if (strcmp(nome_temp, "0") == 0){ //se o digitador for 0, sai
+            printf(COR_OK "Terminador encontrado!\n" COR_RESET);
+            usleep(2000000);
             limpaTela();
             break;
         }
         
         Tproduto* temp = realloc(produtos, (qtdProdutos + 1) * sizeof(Tproduto));
+        
         if(!temp){
             fprintf(stderr, COR_ERRO"Erro de alocacao\n"COR_RESET);
             free(produtos);
@@ -88,11 +83,13 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
 
         printf("Insira a quantidade do produto: ");
         scanf("%d", &produtos[qtdProdutos].quantidade);
-        if (produtos[qtdProdutos].quantidade == 0)
-            produtos[qtdProdutos].status |= ESGOTADO; //marca como esgotado
-        else
-            produtos[qtdProdutos].status &= ~ESGOTADO; //desmarca como esgotado
         while (getchar() != '\n');
+        
+        if (!produtos[qtdProdutos].quantidade) //SE A QUANTIDADE FOR 0
+            produtos[qtdProdutos].status |= ESGOTADO; //Marca como esgotado
+        else
+            produtos[qtdProdutos].status &= ~ESGOTADO; //Desmarca como esgotado
+        
 
         produtos[qtdProdutos].id = qtdProdutos + 1;
         qtdProdutos++;
@@ -101,12 +98,11 @@ Tproduto* cadastrarProduto(Tproduto* produtos)
         printf("\n");
     }
     return produtos;
-
 }
 
 void listarProdutos(Tproduto *produtos) {
     if (qtdProdutos == 0) {
-        printf(COR_ERRO "Nenhum produto cadastrado.\n" COR_RESET);
+        printf(COR_ERRO "Nenhum produto cadastrado.\n Nada para Listar.\n" COR_RESET);
         return;
     }
 
@@ -121,6 +117,7 @@ void listarProdutos(Tproduto *produtos) {
         perror("malloc");
         return;
     }
+
     memcpy(temp, produtos, qtdProdutos * sizeof(Tproduto));
     
     switch (op)
@@ -146,24 +143,16 @@ void listarProdutos(Tproduto *produtos) {
     free(temp);
 }
 
-void listarRecursivo(Tproduto *produtos, int i, int total){
+void listarRecursivo(Tproduto *produtos, int i, int total){ // i será o controlador da recursão
     if (i == total)
         return;
 
-    printf("%-3d | %-29s | %4d | R$%7.2f | ",
-           produtos[i].id,
-           produtos[i].nome,
-           produtos[i].quantidade,
-           produtos[i].preco);
+    printf("%-3d | %-29s | %4d | R$%7.2f | ",produtos[i].id,produtos[i].nome,produtos[i].quantidade,produtos[i].preco);
 
-    if (produtos[i].status & ESGOTADO)
-        printf(COR_ERRO "ESGOTADO" COR_RESET);
-    else
-        printf(COR_OK "DISPONIVEL" COR_RESET);
-
+    produtos[i].status & ESGOTADO ? printf(COR_ERRO "ESGOTADO" COR_RESET) : printf(COR_OK "DISPONIVEL" COR_RESET);
     printf("\n");
 
-    listarRecursivo(produtos, i + 1, total);  // chamada recursiva
+    listarRecursivo(produtos, i + 1, total);  //Chamada recursiva
 }
 
 
@@ -175,7 +164,8 @@ void atualizarEstoque(Tproduto *produtos)
     }
 
     int listar, idAtualizar, idEncontradoAtt, opc;
-    printf("Deseja ver os produtos para obter o ID? (1-Sim / 0-Nao): ");
+
+    printf("Deseja ver os produtos para obter o ID? (0-Nao / 1-Sim): ");
     scanf("%d", &listar);
     while (getchar() != '\n');
 
@@ -203,7 +193,7 @@ void atualizarEstoque(Tproduto *produtos)
     printf("2. Preco\n");
     printf("3. Quantidade\n");
     printf("4. Tudo\n");
-    printf("Escolha: ");
+    printf(COR_INFO"Escolha: "COR_RESET);
     scanf("%d", &opc);
     while (getchar() != '\n');
 
@@ -235,13 +225,12 @@ void atualizarEstoque(Tproduto *produtos)
 
             if (produtos[idEncontradoAtt].quantidade == 0)
                 produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
-            else{
+            else
                 produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
-                }
+            
             break;
         
         case 4:
-            while (getchar() != '\n');
             printf("Insira o novo nome do produto: ");
             fgets(produtos[idEncontradoAtt].nome, TAM_NOME, stdin);
             produtos[idEncontradoAtt].nome[strcspn(produtos[idEncontradoAtt].nome, "\n")] = 0;
@@ -254,10 +243,9 @@ void atualizarEstoque(Tproduto *produtos)
             scanf("%d", &produtos[idEncontradoAtt].quantidade);
             while (getchar() != '\n');
             if (produtos[idEncontradoAtt].quantidade == 0)
-                produtos[idEncontradoAtt].status |= ESGOTADO; //marca como esgotado
-            else{
-                produtos[idEncontradoAtt].status &= ~ESGOTADO;//desmarca como esgotado
-            }
+                produtos[idEncontradoAtt].status |= ESGOTADO;
+            else
+                produtos[idEncontradoAtt].status &= ~ESGOTADO;
             break;
     }
     printf(COR_OK"Atualizacao concluida. \n"COR_RESET);
@@ -272,15 +260,16 @@ void deletarProduto(Tproduto *vet, int id){
     int i_excl = buscaProduto_ID(vet, id);
 
     //código de erro = Produto nao cadastrado
-    if(i_excl == -1)
+    if(i_excl == -1){
+        printf(COR_ERRO"Produto não cadastrado."COR_RESET);
         return;
+    }
 
     //Sobrescreve o produto a ser excluido pelos seguintes
     for(int i = i_excl; i < qtdProdutos-1; i++){
         vet[i] = vet[i+1];
         vet[i].id--;
     }
-
     
     qtdProdutos--; //Diminui 1 da quantidade total
 
@@ -293,11 +282,9 @@ int buscaProduto_ID(Tproduto *vet, int id)
     //Faz a busca pelo ID fornecido em todo o vetor
     for(i=0; i<qtdProdutos; i++){
         if(id == vet[i].id)
-        {
             return i;
-        }
     }
-        printf(COR_ERRO "ID fornecido Nao Cadastrado\n" COR_RESET);
+        printf(COR_ERRO "ID fornecido nao cadastrado\n" COR_RESET);
         return -1;
 }
 
