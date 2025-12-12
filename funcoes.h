@@ -18,7 +18,7 @@
 
 // Menu Callback
 typedef void(*notificar)(const char*); //tipo 'notificar' é uma função void que recebe char*.
-typedef void (*Callback)(void*);
+typedef void (*Callback)(void*); //tipo Callback é uma função void que receve void*.
 
 // Tipos e Estruturas
 
