@@ -3,14 +3,14 @@
 
 #include <stdio.h>
 
-//================= DEFINICOES E MACROS =================
+// Definições e macros
 #define ESGOTADO 1 // 0000 0001
 #define MAX_NOTI 3 //maximo de notificações diferentes
 #define TAM_NOME 50
 
 // Cores para interface
 #define COR_RESET  "\x1b[0m"
-#define COR_TITULO "\033[1;36m"
+#define COR_TITULO "\x1B[36m"
 #define COR_MENU   "\x1b[34m"
 #define COR_OK     "\x1b[32m"
 #define COR_INFO   "\x1b[33m"
