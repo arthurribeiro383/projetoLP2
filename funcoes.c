@@ -1,9 +1,8 @@
-#define _GNU_SOURCE
+#define _GNU_SOURCE //Ativa recursos extras da biblioteca padrão (snprintf)
 #include "funcoes.h"
-#include <stdlib.h>
+#include <stdlib.h> // Alocação dinâmica e Qsort
 #include <string.h>
-#include <time.h>
-#include <ctype.h>
+#include <ctype.h> //Tratamento de caracteres e validação
 
 // Inicializacao de Var Globais
 int qtdProdutos = 0;
@@ -32,14 +31,13 @@ void Pause(void) {
 }
 
 // Funcoes de Menu (Callbacks)
-
 void acaoListar(void *produtos) {
     limpaTela();
     listarProdutos((Tproduto*)produtos);
 }
 
 void acaoAtualizar(void *data) {
-    Tproduto *produtos = (Tproduto*) data;
+    Tproduto *produtos = (Tproduto*)data;
     atualizarEstoque(produtos);
 }
 
@@ -56,14 +54,14 @@ void acaoMenuVendas(void *data) {
     vendasMenu(cabeca);
 }
 
-//================= PARTE DE PRODUTOS =================
+//Parte de produtos
 
 Tproduto* cadastrarProduto(Tproduto* produtos)
 {   
     char nome_temp[TAM_NOME];
     while (1)
     {
-        printf("Insira o nome do produto %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
+        printf("Insira o nome do produto: %d (Digite ""0"" para terminar o cadastro): ", qtdProdutos+1);
         fgets(nome_temp, TAM_NOME, stdin);
         nome_temp[strcspn(nome_temp, "\n")] = 0;
 
