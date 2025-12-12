@@ -264,7 +264,7 @@ void atualizarEstoque(Tproduto *produtos)
     printf(COR_OK"Atualizacao concluida. \n"COR_RESET);
 }
 
-void deletarProduto(Tproduto vet[], int id){
+void deletarProduto(Tproduto *vet, int id){
     if (qtdProdutos == 0){
         printf(COR_INFO "Nenhum produto para deletar. \n" COR_RESET);
         return;
@@ -288,7 +288,7 @@ void deletarProduto(Tproduto vet[], int id){
     printf(COR_OK "Produto excluido com sucesso!\n" COR_RESET);
 }
 
-int buscaProduto_ID(Tproduto vet[], int id)
+int buscaProduto_ID(Tproduto *vet, int id)
 {
     int i;
     //Faz a busca pelo ID fornecido em todo o vetor

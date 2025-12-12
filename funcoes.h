@@ -30,14 +30,14 @@ typedef struct custom_noti{
 
 typedef struct {
     int id;
-    char nome[50];
+    char nome[TAM_NOME];
     unsigned char status;
     float preco;
     int quantidade;
 } Tproduto;
 
 typedef struct Toferta{
-    char nome[50];
+    char nome[TAM_NOME];
     int qtd;
     float valor;
     struct Toferta* prox;
@@ -65,8 +65,8 @@ Tproduto* cadastrarProduto(Tproduto* produtos);
 void listarProdutos(Tproduto *produtos);
 void listarRecursivo(Tproduto *produtos, int i, int total);
 void atualizarEstoque(Tproduto *produtos);
-void deletarProduto(Tproduto vet[], int id);
-int buscaProduto_ID(Tproduto vet[], int id);
+void deletarProduto(Tproduto *vet, int id);
+int buscaProduto_ID(Tproduto *vet, int id);
 
 // Funcoes Comparadoras para o Qsort
 int cmpNome(const void *a, const void *b);
